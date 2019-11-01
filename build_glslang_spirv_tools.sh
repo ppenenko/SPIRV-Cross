@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROFILE=Release
+PROFILE=Debug
 
 if [ ! -z $1 ]; then
 	PROFILE=$1
@@ -13,7 +13,7 @@ fi
 echo "Building glslang."
 mkdir -p external/glslang-build
 cd external/glslang-build
-cmake ../glslang -DCMAKE_BUILD_TYPE=$PROFILE -DCMAKE_INSTALL_PREFIX=output
+cmake ../glslang -DCMAKE_BUILD_TYPE=$PROFILE -DCMAKE_INSTALL_PREFIX=output -G "Visual Studio 15 2017" -A x64 -DCMAKE_INSTALL_PREFIX="$(pwd)/install"
 cmake --build . --config $PROFILE --target install ${NPROC}
 cd ../..
 
