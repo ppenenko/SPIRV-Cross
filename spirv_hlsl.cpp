@@ -4929,9 +4929,31 @@ string CompilerHLSL::compile()
 	backend.nonuniform_qualifier = "NonUniformResourceIndex";
 	backend.support_case_fallthrough = false;
 
+	SmallVector<FunctionID> exported_functions;
+
+	if (options.export_functions)
+	{
+		ir.for_each_typed_id<SPIRFunction>(
+			[this, &exported_functions](uint32_t id, SPIRFunction &)
+			{
+				if (id != ir.default_entry_point)
+				{
+					exported_functions.push_back(id);
+				}
+			}
+		);
+	}
+
 	fixup_type_alias();
 	reorder_type_alias();
+
 	build_function_control_flow_graphs_and_analyze();
+
+	for (FunctionID id : exported_functions)
+	{
+		build_function_control_flow_graphs_and_analyze(id);
+	}
+	
 	validate_shader_model();
 	update_active_builtins();
 	analyze_image_and_sampler_usage();
@@ -4955,8 +4977,18 @@ string CompilerHLSL::compile()
 		emit_header();
 		emit_resources();
 
-		emit_function(get<SPIRFunction>(ir.default_entry_point), Bitset());
-		emit_hlsl_entry_point();
+		if (options.export_functions)
+		{
+			for (FunctionID id : exported_functions)
+			{
+				emit_function(get<SPIRFunction>(id), Bitset());
+			}
+		}
+		else
+		{
+			emit_function(get<SPIRFunction>(ir.default_entry_point), Bitset());
+			emit_hlsl_entry_point();
+		}
 
 		pass_count++;
 	} while (is_forcing_recompilation());

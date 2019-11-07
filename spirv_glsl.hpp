@@ -107,6 +107,9 @@ public:
 		// May not correspond exactly to original source, but should be a good approximation.
 		bool emit_line_directives = false;
 
+		// Export all functions in the module except the default entry point, whether called or not.
+		bool export_functions = false;
+
 		enum Precision
 		{
 			DontCare,

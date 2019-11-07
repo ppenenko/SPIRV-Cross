@@ -891,6 +891,7 @@ protected:
 		void add_dependency(uint32_t dst, uint32_t src);
 	};
 
+	void build_function_control_flow_graphs_and_analyze(FunctionID);
 	void build_function_control_flow_graphs_and_analyze();
 	std::unordered_map<uint32_t, std::unique_ptr<CFG>> function_cfgs;
 	const CFG &get_cfg_for_current_function() const;
