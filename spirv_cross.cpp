@@ -3851,11 +3851,23 @@ const CFG &Compiler::get_cfg_for_function(uint32_t id) const
 	return *cfg_itr->second;
 }
 
-void Compiler::build_function_control_flow_graphs_and_analyze(FunctionID function)
+void Compiler::build_function_control_flow_graphs_and_analyze(const SmallVector<FunctionID> &exported_functions)
 {
 	CFGBuilder handler(*this);
-	handler.function_cfgs[function].reset(new CFG(*this, get<SPIRFunction>(function)));
-	traverse_all_reachable_opcodes(get<SPIRFunction>(function), handler);
+	handler.function_cfgs[ir.default_entry_point].reset(new CFG(*this, get<SPIRFunction>(ir.default_entry_point)));
+
+	if (!exported_functions.empty())
+	{
+		for (FunctionID id : exported_functions)
+		{
+			handler.follow_function_call(get<SPIRFunction>(id));
+		}
+	}
+	else
+	{
+		traverse_all_reachable_opcodes(get<SPIRFunction>(ir.default_entry_point), handler);
+	}
+	
 	function_cfgs = move(handler.function_cfgs);
 	bool single_function = function_cfgs.size() <= 1;
 
@@ -3899,7 +3911,8 @@ void Compiler::build_function_control_flow_graphs_and_analyze(FunctionID functio
 
 void Compiler::build_function_control_flow_graphs_and_analyze()
 {
-	return build_function_control_flow_graphs_and_analyze(ir.default_entry_point);
+	static const SmallVector<FunctionID> no_exports;
+	return build_function_control_flow_graphs_and_analyze(no_exports);
 }
 
 Compiler::CFGBuilder::CFGBuilder(Compiler &compiler_)

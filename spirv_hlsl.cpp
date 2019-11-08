@@ -4946,14 +4946,7 @@ string CompilerHLSL::compile()
 
 	fixup_type_alias();
 	reorder_type_alias();
-
-	build_function_control_flow_graphs_and_analyze();
-
-	for (FunctionID id : exported_functions)
-	{
-		build_function_control_flow_graphs_and_analyze(id);
-	}
-	
+	build_function_control_flow_graphs_and_analyze(exported_functions);
 	validate_shader_model();
 	update_active_builtins();
 	analyze_image_and_sampler_usage();

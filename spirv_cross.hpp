@@ -891,8 +891,9 @@ protected:
 		void add_dependency(uint32_t dst, uint32_t src);
 	};
 
-	void build_function_control_flow_graphs_and_analyze(FunctionID);
 	void build_function_control_flow_graphs_and_analyze();
+	void build_function_control_flow_graphs_and_analyze(const SmallVector<FunctionID>& exported_functions);
+
 	std::unordered_map<uint32_t, std::unique_ptr<CFG>> function_cfgs;
 	const CFG &get_cfg_for_current_function() const;
 	const CFG &get_cfg_for_function(uint32_t id) const;
