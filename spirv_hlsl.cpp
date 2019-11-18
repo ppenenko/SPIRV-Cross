@@ -4968,10 +4968,13 @@ string CompilerHLSL::compile()
 		buffer.reset();
 
 		emit_header();
-		emit_resources();
 
 		if (options.export_functions)
 		{
+            replace_illegal_names();
+            emit_specialization_constants_and_structs();
+            emit_composite_constants();
+
 			for (FunctionID id : exported_functions)
 			{
 				emit_function(get<SPIRFunction>(id), Bitset());
@@ -4979,6 +4982,7 @@ string CompilerHLSL::compile()
 		}
 		else
 		{
+            emit_resources();
 			emit_function(get<SPIRFunction>(ir.default_entry_point), Bitset());
 			emit_hlsl_entry_point();
 		}
