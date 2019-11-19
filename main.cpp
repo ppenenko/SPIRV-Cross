@@ -536,7 +536,6 @@ struct CLIArguments
 	SmallVector<HLSLVertexAttributeRemap> hlsl_attr_remap;
 	string entry;
 	string entry_stage;
-	bool export_functions = false;
 
 	struct Rename
 	{
@@ -907,7 +906,6 @@ static string compile_iteration(const CLIArguments &args, std::vector<uint32_t> 
 	opts.emit_push_constant_as_uniform_buffer = args.glsl_emit_push_constant_as_ubo;
 	opts.emit_uniform_buffer_as_plain_uniforms = args.glsl_emit_ubo_as_plain_uniforms;
 	opts.emit_line_directives = args.emit_line_directives;
-	opts.export_functions = args.export_functions;
 	compiler->set_common_options(opts);
 
 	// Set HLSL specific options.
@@ -1128,7 +1126,6 @@ static int main_inner(int argc, char *argv[])
 	});
 	cbs.add("--entry", [&args](CLIParser &parser) { args.entry = parser.next_string(); });
 	cbs.add("--stage", [&args](CLIParser &parser) { args.entry_stage = parser.next_string(); });
-	cbs.add("--export-functions", [&args](CLIParser &) { args.export_functions = true; });
 	cbs.add("--separate-shader-objects", [&args](CLIParser &) { args.sso = true; });
 	cbs.add("--set-hlsl-vertex-input-semantic", [&args](CLIParser &parser) {
 		HLSLVertexAttributeRemap remap;

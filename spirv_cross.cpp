@@ -3860,7 +3860,8 @@ void Compiler::build_function_control_flow_graphs_and_analyze(const SmallVector<
 	{
 		for (FunctionID id : exported_functions)
 		{
-			handler.follow_function_call(get<SPIRFunction>(id));
+            handler.function_cfgs[id].reset(new CFG(*this, get<SPIRFunction>(id)));
+            traverse_all_reachable_opcodes(get<SPIRFunction>(id), handler);
 		}
 	}
 	else

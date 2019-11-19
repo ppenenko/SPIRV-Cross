@@ -4931,12 +4931,14 @@ string CompilerHLSL::compile()
 
 	SmallVector<FunctionID> exported_functions;
 
-	if (options.export_functions)
+	if (!hlsl_options.exported_functions.empty())
 	{
 		ir.for_each_typed_id<SPIRFunction>(
 			[this, &exported_functions](uint32_t id, SPIRFunction &)
 			{
-				if (id != ir.default_entry_point)
+                if ( hlsl_options.exported_functions.find(ir.get_name(id))
+                    != hlsl_options.exported_functions.end()
+                )
 				{
 					exported_functions.push_back(id);
 				}
@@ -4970,7 +4972,7 @@ string CompilerHLSL::compile()
 		emit_header();
 		emit_resources();
 
-		if (options.export_functions)
+		if (!exported_functions.empty())
 		{
 			for (FunctionID id : exported_functions)
 			{
