@@ -118,6 +118,8 @@ public:
 	// so the calling application should declare explicit bindings on this ID before calling compile().
 	VariableID remap_num_workgroups_builtin();
 
+    void emit_uniform(const SPIRVariable &var) override;
+
 private:
 	std::string type_to_glsl(const SPIRType &type, uint32_t id = 0) override;
 	std::string image_type_hlsl(const SPIRType &type, uint32_t id);
@@ -137,7 +139,6 @@ private:
 	                  uint32_t count) override;
 	void emit_buffer_block(const SPIRVariable &type) override;
 	void emit_push_constant_block(const SPIRVariable &var) override;
-	void emit_uniform(const SPIRVariable &var) override;
 	void emit_modern_uniform(const SPIRVariable &var);
 	void emit_legacy_uniform(const SPIRVariable &var);
 	void emit_specialization_constants_and_structs();
